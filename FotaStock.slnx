@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FotaStock.Web/FotaStock.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FotaStock.Tests/FotaStock.Tests.csproj" />
+  </Folder>
+</Solution>
