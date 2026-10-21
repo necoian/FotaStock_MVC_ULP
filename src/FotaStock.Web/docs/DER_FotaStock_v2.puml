@@ -1,0 +1,84 @@
+
+@startuml
+title FotaStock - DER 
+hide circle
+left to right direction
+
+skinparam linetype ortho
+skinparam nodesep 100
+skinparam ranksep 150
+skinparam padding 1
+skinparam shadowing false
+skinparam entity {
+    BackgroundColor white
+    BorderColor #444444
+    FontColor #222222
+}
+
+entity "Usuario" as Usuario {
+    * Id : INT <<PK>>
+    --
+    Nombre : VARCHAR(100)
+    Email : VARCHAR(150) <<UNIQUE>>
+    PasswordHash : VARCHAR(255)
+    Rol : VARCHAR(30)
+    AvatarRuta : VARCHAR(500)
+    FechaAlta : DATETIME
+}
+
+entity "Categoria" as Categoria {
+    * Id : INT <<PK>>
+    --
+    Nombre : VARCHAR(100) <<UNIQUE>>
+    Descripcion : VARCHAR(500)
+}
+
+entity "Imagen" as Imagen {
+    * Id : INT <<PK>>
+    --
+    UsuarioId : INT <<FK>>
+    CategoriaId : INT <<FK>>
+    Titulo : VARCHAR(150)
+    Descripcion : VARCHAR(1000)
+    ArchivoRuta : VARCHAR(500)
+    Precio : DECIMAL(10,2)
+    Estado : VARCHAR(30)
+    FechaPublicacion : DATETIME
+}
+
+entity "Compra" as Compra {
+    * Id : INT <<PK>>
+    --
+    UsuarioId : INT <<FK>>
+    Fecha : DATETIME
+    Total : DECIMAL(10,2)
+    Estado : VARCHAR(30)
+}
+
+entity "DetalleCompra" as DetalleCompra {
+    * Id : INT <<PK>>
+    --
+    CompraId : INT <<FK>>
+    ImagenId : INT <<FK>>
+    PrecioUnitario : DECIMAL(10,2)
+}
+
+entity "Licencia" as Licencia {
+    * Id : INT <<PK>>
+    --
+    DetalleCompraId : INT <<FK, UNIQUE>>
+    Codigo : VARCHAR(100) <<UNIQUE>>
+    FechaEmision : DATETIME
+    Estado : VARCHAR(30)
+}
+
+Usuario "1" -down- "0..*" Imagen : publica
+Categoria "1" -down- "0..*" Imagen : clasifica
+
+Usuario "1" -right- "0..*" Compra : realiza
+Compra "1" -down- "1..*" DetalleCompra : contiene
+Imagen "1" -down- "0..*" DetalleCompra : adquirida
+DetalleCompra "1" -right- "0..1" Licencia : genera
+
+@enduml
+
