@@ -1,19 +1,14 @@
-
 @startuml
-title FotaStock - DER 
+title FotaStock - DER
 hide circle
 left to right direction
 
 skinparam linetype ortho
-skinparam nodesep 100
-skinparam ranksep 150
+skinparam nodesep 45
+skinparam ranksep 160
 skinparam padding 1
-skinparam shadowing false
-skinparam entity {
-    BackgroundColor white
-    BorderColor #444444
-    FontColor #222222
-}
+
+
 
 entity "Usuario" as Usuario {
     * Id : INT <<PK>>
@@ -40,10 +35,33 @@ entity "Imagen" as Imagen {
     CategoriaId : INT <<FK>>
     Titulo : VARCHAR(150)
     Descripcion : VARCHAR(1000)
-    ArchivoRuta : VARCHAR(500)
-    Precio : DECIMAL(10,2)
+    Ubicacion : VARCHAR(150)
     Estado : VARCHAR(30)
     FechaPublicacion : DATETIME
+}
+
+entity "ArchivoImagen" as ArchivoImagen {
+    * Id : INT <<PK>>
+    --
+    ImagenId : INT <<FK>>
+    TipoArchivo : VARCHAR(20)
+    RutaAlmacenamiento : VARCHAR(500)
+    TieneMarcaAgua : BOOLEAN
+    HashIntegridad : VARCHAR(128)
+    FechaCarga : DATETIME
+}
+
+entity "OfertaLicencia" as OfertaLicencia {
+    * Id : INT <<PK>>
+    --
+    ImagenId : INT <<FK>>
+    Nombre : VARCHAR(100)
+    Condiciones : TEXT
+    Precio : DECIMAL(10,2)
+    Moneda : CHAR(3)
+    Estado : VARCHAR(30)
+    FechaVigenciaDesde : DATETIME
+    FechaVigenciaHasta : DATETIME (NULL)
 }
 
 entity "Compra" as Compra {
@@ -51,16 +69,30 @@ entity "Compra" as Compra {
     --
     UsuarioId : INT <<FK>>
     Fecha : DATETIME
-    Total : DECIMAL(10,2)
     Estado : VARCHAR(30)
+    Total : DECIMAL(10,2)
+    Moneda : CHAR(3)
+}
+
+entity "Pago" as Pago {
+    * Id : INT <<PK>>
+    --
+    CompraId : INT <<FK>>
+    Monto : DECIMAL(10,2)
+    FechaIntento : DATETIME
+    FechaRespuesta : DATETIME (NULL)
+    Estado : VARCHAR(30)
+    Metodo : VARCHAR(30)
+    Referencia : VARCHAR(100) <<UNIQUE>>
 }
 
 entity "DetalleCompra" as DetalleCompra {
     * Id : INT <<PK>>
     --
     CompraId : INT <<FK>>
-    ImagenId : INT <<FK>>
+    OfertaLicenciaId : INT <<FK>>
     PrecioUnitario : DECIMAL(10,2)
+    CondicionesSnapshot : TEXT
 }
 
 entity "Licencia" as Licencia {
@@ -72,13 +104,15 @@ entity "Licencia" as Licencia {
     Estado : VARCHAR(30)
 }
 
-Usuario "1" -down- "0..*" Imagen : publica
-Categoria "1" -down- "0..*" Imagen : clasifica
-
-Usuario "1" -right- "0..*" Compra : realiza
-Compra "1" -down- "1..*" DetalleCompra : contiene
-Imagen "1" -down- "0..*" DetalleCompra : adquirida
+Usuario "1" -down- "0..N" Imagen : publica
+Categoria "1" -down- "0..N" Imagen : clasifica
+Imagen "1" -down- "0..N" ArchivoImagen : tiene archivos
+Imagen "1" -right- "0..N" OfertaLicencia : ofrece
+Usuario "1" -left- "0..N" Compra : realiza
+Compra "1" -down- "1..N" DetalleCompra : contiene
+Compra "1" -right- "0..N" Pago : registra intentos
+OfertaLicencia "1" -down- "0..N" DetalleCompra : seleccionada en
 DetalleCompra "1" -right- "0..1" Licencia : genera
 
-@enduml
 
+@enduml
