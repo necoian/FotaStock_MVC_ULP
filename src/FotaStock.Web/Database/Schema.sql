@@ -28,7 +28,6 @@ CREATE TABLE `archivoimagen` (
   `TipoArchivo` varchar(20) NOT NULL,
   `RutaAlmacenamiento` varchar(500) NOT NULL,
   `TieneMarcaAgua` tinyint(1) NOT NULL,
-  `Moneda` char(3) NOT NULL,
   `HashIntegridad` varchar(128) NOT NULL,
   `FechaCarga` datetime NOT NULL,
   PRIMARY KEY (`Id`),
@@ -198,7 +197,7 @@ CREATE TABLE `usuario` (
   `Email` varchar(150) NOT NULL,
   `PasswordHash` varchar(255) NOT NULL,
   `Rol` varchar(30) NOT NULL,
-  `AvatarRuta` varchar(30) DEFAULT NULL,
+  `AvatarRuta` varchar(500) DEFAULT NULL,
   `FechaAlta` datetime NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `Email` (`Email`) /*!80000 INVISIBLE */
@@ -214,4 +213,4 @@ CREATE TABLE `usuario` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-22  1:20:31
+-- Dump completed on 2026-10-23  0:48:21
