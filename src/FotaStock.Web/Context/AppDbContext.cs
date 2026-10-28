@@ -36,8 +36,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ArchivoImagen>(e =>
         {
             
-            e.HasKey("IdArchivoImagen");
-            e.Property("IdArchivoImagen").ValueGeneratedOnAdd();
+            e.HasKey("ArchivoImagenId");
+            e.Property("ArchivoImagenId").ValueGeneratedOnAdd();
             e.HasOne(e => e.Imagen).WithMany(p => p.ArchivoImagenes).HasForeignKey(e => e.ImagenId).OnDelete(DeleteBehavior.Cascade);
         });
 
@@ -45,8 +45,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Categoria>(e =>
         {
             
-            e.HasKey("IdCategoria");
-            e.Property("IdCategoria").ValueGeneratedOnAdd();
+            e.HasKey("CategoriaId");
+            e.Property("CategoriaId").ValueGeneratedOnAdd();
             e.HasData(
                 new Categoria { CategoriaId = 1, Nombre = "Hiperrealista", Descripcion = "Es el arte de copiar de la manera más precisa la realidad y plasmarlo con las tecnicas de dibujo o pintura que el artista crea adecuado"}
             );
@@ -56,8 +56,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Compra>(e =>
         {
             
-            e.HasKey("IdCompra");
-            e.Property("IdCompra").ValueGeneratedOnAdd();
+            e.HasKey("CompraId");
+            e.Property("CompraId").ValueGeneratedOnAdd();
             e.Property("Total").HasColumnType("decimal(10,2)");
             e.HasOne(e => e.Usuario).WithMany(p => p.Compras).HasForeignKey(e => e.UsuarioId).OnDelete(DeleteBehavior.Cascade);
         });
@@ -65,8 +65,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<DetalleCompra>(e =>
         {
             
-            e.HasKey("IdDetalleCompra");
-            e.Property("IdDetalleCompra").ValueGeneratedOnAdd();
+            e.HasKey("DetalleCompraId");
+            e.Property("DetalleCompraId").ValueGeneratedOnAdd();
             e.Property("PrecioUnitario").HasColumnType("decimal(10,2)");
             e.HasOne(e => e.Compra).WithMany(p => p.DetalleCompras).HasForeignKey(e => e.CompraId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(e => e.OfertaLicencia).WithMany(p=> p.DetalleCompras).HasForeignKey(e => e.OfertaLicenciaId).OnDelete(DeleteBehavior.Restrict);
@@ -75,8 +75,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Imagen>(e =>
         {
             
-            e.HasKey("IdImagen");
-            e.Property("IdImagen").ValueGeneratedOnAdd();
+            e.HasKey("ImagenId");
+            e.Property("ImagenId").ValueGeneratedOnAdd();
             e.HasOne(e => e.Categoria).WithMany(p => p.Imagenes).HasForeignKey(e => e.CategoriaId).OnDelete(DeleteBehavior.Restrict);
             e.HasOne(e => e.Usuario).WithMany(p => p.Imagenes).HasForeignKey(e => e.UsuarioId).OnDelete(DeleteBehavior.Restrict);
             
@@ -85,15 +85,15 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Licencia>(e =>
         {
             
-            e.HasKey("IdLicencia");
-            e.Property("IdLicencia").ValueGeneratedOnAdd();
+            e.HasKey("LicenciaId");
+            e.Property("LicenciaId").ValueGeneratedOnAdd();
             e.HasOne(e => e.DetalleCompra).WithMany(p => p.Licencias).HasForeignKey(e => e.DetalleCompraId).OnDelete(DeleteBehavior.Restrict);        });
 
         modelBuilder.Entity<OfertaLicencia>(e =>
         {
             
-            e.HasKey("IdOfertaLicencia");
-            e.Property("IdOfertaLicencia").ValueGeneratedOnAdd();
+            e.HasKey("OfertaLicenciaId");
+            e.Property("OfertaLicenciaId").ValueGeneratedOnAdd();
             e.Property("Precio").HasColumnType("decimal(10,2)");
             e.HasOne(e => e.Imagen).WithMany(p => p.OfertaLicencias).HasForeignKey(e => e.ImagenId).OnDelete(DeleteBehavior.Restrict);
             
@@ -103,8 +103,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Pago>(e =>
         {
             
-            e.HasKey("IdPago");
-            e.Property("IdPago").ValueGeneratedOnAdd();
+            e.HasKey("PagoId");
+            e.Property("PagoId").ValueGeneratedOnAdd();
+            e.Property("Monto").HasColumnType("decimal(10,2)");
             e.HasOne(e => e.Compra).WithMany(p => p.Pagos).HasForeignKey(e => e.CompraId).OnDelete(DeleteBehavior.Cascade);
             
         });
@@ -112,8 +113,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Usuario>(e =>
         {
             
-            e.HasKey("IdUsuario");
-            e.Property("IdUsuario").ValueGeneratedOnAdd();
+            e.HasKey("UsuarioId");
+            e.Property("UsuarioId").ValueGeneratedOnAdd();
             
         });
 
