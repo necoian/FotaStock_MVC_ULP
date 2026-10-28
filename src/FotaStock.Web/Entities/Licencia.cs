@@ -7,7 +7,7 @@ public class Licencia
 {
     
 
-    public int IdLicencia { get; set; }
+    public int LicenciaId { get; set; }
 
     [Required]
     public int DetalleCompraId { get; set; }

@@ -11,7 +11,7 @@ skinparam padding 1
 
 
 entity "Usuario" as Usuario {
-    * IdUsuario : INT <<PK>>
+    * UsuarioId : INT <<PK>>
     --
     Nombre : VARCHAR(100)
     Email : VARCHAR(150) <<UNIQUE>>
@@ -22,14 +22,14 @@ entity "Usuario" as Usuario {
 }
 
 entity "Categoria" as Categoria {
-    * IdCategoria : INT <<PK>>
+    * CategoriaId : INT <<PK>>
     --
     Nombre : VARCHAR(100) <<UNIQUE>>
     Descripcion : VARCHAR(500)
 }
 
 entity "Imagen" as Imagen {
-    * IdImagen : INT <<PK>>
+    * ImagenId : INT <<PK>>
     --
     UsuarioId : INT <<FK>>
     CategoriaId : INT <<FK>>
@@ -41,7 +41,7 @@ entity "Imagen" as Imagen {
 }
 
 entity "ArchivoImagen" as ArchivoImagen {
-    * IdArchivoImagen : INT <<PK>>
+    * ArchivoImagenId : INT <<PK>>
     --
     ImagenId : INT <<FK>>
     TipoArchivo : VARCHAR(20)
@@ -52,7 +52,7 @@ entity "ArchivoImagen" as ArchivoImagen {
 }
 
 entity "OfertaLicencia" as OfertaLicencia {
-    * IdOfertaLicencia : INT <<PK>>
+    * OfertaLicenciaId : INT <<PK>>
     --
     ImagenId : INT <<FK>>
     Nombre : VARCHAR(100)
@@ -65,7 +65,7 @@ entity "OfertaLicencia" as OfertaLicencia {
 }
 
 entity "Compra" as Compra {
-    * IdCompra : INT <<PK>>
+    * CompraId : INT <<PK>>
     --
     UsuarioId : INT <<FK>>
     Fecha : DATETIME
@@ -75,7 +75,7 @@ entity "Compra" as Compra {
 }
 
 entity "Pago" as Pago {
-    * IdPago : INT <<PK>>
+    * PagoId : INT <<PK>>
     --
     CompraId : INT <<FK>>
     Monto : DECIMAL(10,2)
@@ -87,7 +87,7 @@ entity "Pago" as Pago {
 }
 
 entity "DetalleCompra" as DetalleCompra {
-    * IdDetalleCompra : INT <<PK>>
+    * DetalleCompraId : INT <<PK>>
     --
     CompraId : INT <<FK>>
     OfertaLicenciaId : INT <<FK>>
@@ -96,7 +96,7 @@ entity "DetalleCompra" as DetalleCompra {
 }
 
 entity "Licencia" as Licencia {
-    * IdLicencia : INT <<PK>>
+    * LicenciaId : INT <<PK>>
     --
     DetalleCompraId : INT <<FK, UNIQUE>>
     Codigo : VARCHAR(100) <<UNIQUE>>

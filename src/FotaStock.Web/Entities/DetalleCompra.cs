@@ -9,7 +9,7 @@ public class DetalleCompra
 {
     
 
-    public int IdDetalleCompra { get; set; }
+    public int DetalleCompraId { get; set; }
 
     [Required]
     public int CompraId { get; set; }

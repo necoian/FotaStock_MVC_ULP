@@ -6,7 +6,7 @@ namespace FotaStock.Web.Entities;
 public class Compra
 {
     
-    public int IdCompra { get; set; }
+    public int CompraId { get; set; }
 
     [Required]
     public int UsuarioId { get; set; }

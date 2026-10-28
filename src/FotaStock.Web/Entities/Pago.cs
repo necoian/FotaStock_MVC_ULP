@@ -7,7 +7,11 @@ namespace FotaStock.Web.Entities;
 public class Pago
 {
     
-    public int IdPago { get; set; }
+    public int PagoId { get; set; }
+
+    [Required]
+
+    public int CompraId { get; set; }
 
     [Required]
     public decimal Monto { get; set; }

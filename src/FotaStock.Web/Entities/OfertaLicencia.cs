@@ -5,7 +5,7 @@ namespace FotaStock.Web.Entities;
 public class OfertaLicencia
 {
     
-    public int IdImagen { get; set; }
+    public int OfertaLicenciaId { get; set; }
 
     [Required]
     public int ImagenId { get; set; }

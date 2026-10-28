@@ -8,7 +8,7 @@ namespace FotaStock.Web.Entities;
 public class ArchivoImagen
 {
     
-    public int IdArchivoImagen { get; set; }
+    public int ArchivoImagenId { get; set; }
 
     [Required]
     public int ImagenId { get; set; }

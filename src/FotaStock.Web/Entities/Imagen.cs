@@ -7,7 +7,7 @@ public class Imagen
 {
     
 
-    public int IdImagen { get; set; }
+    public int ImagenId { get; set; }
 
     [Required]
     public int UsuarioId { get; set; }
@@ -35,5 +35,6 @@ public class Imagen
 
     public ICollection<ArchivoImagen>? ArchivoImagenes { get; set; }
 
+    public ICollection<OfertaLicencia>? OfertaLicencias { get; set; }
 
 }

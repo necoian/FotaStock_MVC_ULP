@@ -6,7 +6,7 @@ namespace FotaStock.Web.Entities;
 public class Usuario
 {
     
-    public int IdUsuario {get;set;}
+    public int UsuarioId {get;set;}
 
     [Required]
     public string Nombre {get;set;} = string.Empty;
