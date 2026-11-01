@@ -45,13 +45,16 @@ public class CategoriaController(CategoriaService _categoriaService) : Controlle
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddEdit(CategoriaVM entityVM)
+    public async Task<IActionResult> AddEdit([FromBody]CategoriaVM entityVM)
     {
         
         await _categoriaService.AddAsync(entityVM);
 
+
+
         ViewBag.message = "Categoria creada";
-        return View();
+
+        return Ok();
 
     }
 

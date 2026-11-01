@@ -2,11 +2,26 @@
 
 <div id="app">
     <div class="row justify-content-between mt-4">
+        <div v-if="creado">
+            <h5 class="alert theme-success" role="alert">Se ha creado con exito la categoria</h5>
+        </div>
+        <div v-if="error">
+            <h5 class="alert theme-danger" role="alert">Error en crear la categoria</h5>
+        </div>
         <div class="col-4">
             <h4>Categorias</h4>
+
         </div>
         <div class="col-4 text-end">
-            <a href="#" class="btn btn-success"><i class="fa-solid fa-circle-plus"></i> Crear nueva categoria</a>
+            <a href="#" class="btn btn-success" type= "button" v-on:click="saveCategoria">
+                <i class="fa-solid fa-circle-plus"></i> Crear nueva categoria
+            </a>
+            <hr/>
+            
+            <label class="form-label">Ingresar nombre de la categoria</label>
+            <input type="text" class="form-control" id="nombre" autocomplete="off" v-model="data.nombre">
+            <label class="form-label">Ingresar descripcion de la categoria</label>
+            <input type="text" class="form-control" id="nombre" autocomplete="off" v-model="data.descripcion">
 
         </div>
 
@@ -62,10 +77,29 @@
             setup() {  
                            
                 
-                const mensaje = ref("hola");
                 const data = ref([]);
                 const categorias = ref([]);
                 const isToCreate = ref(true);
+
+                const saveCategoria = () => {
+                    fetch('/Categoria/AddEdit' , 
+                    {
+                        method: "POST",
+                        headers: {'Content-Type': 'application/json;charset=utf-8'},
+                        body: JSON.stringify({
+                            nombre:data.value.nombre, descripcion:data.value.descripcion
+                        })
+                    }).then(response => {
+                        if(response.ok) {
+                            data.value.nombre = ""
+                            data.value.descripcion = ""
+                        }
+                        showCategorias();
+                    })
+                    
+
+
+                }
                 
                 const showCategorias = () => {
                     fetch('/Categoria/GetAll', 
@@ -79,10 +113,11 @@
                         })
                 }
 
+
                 //A tener en cuenta. se debe colocar los nombres de las tablas en minuscula, ej (nombre)
                 showCategorias();
 
-                return {categorias, isToCreate,showCategorias, data, mensaje} 
+                return {categorias, isToCreate,showCategorias, data, saveCategoria} 
             }
 
         }).mount("#app")
