@@ -16,9 +16,24 @@ public class CategoriaService(GenericRepository<Categoria> _categoriaRepository)
         {
             CategoriaId = c.CategoriaId,
             Nombre = c.Nombre,
+            Descripcion = c.Descripcion,
         }).ToList();
 
         return categoriasVM;
     }
+
+    public async Task AddAsync(CategoriaVM viewModel)
+    {
+        var entity = new Categoria
+        {
+            Nombre = viewModel.Nombre,   
+            Descripcion = viewModel.Descripcion,     
+            };
+        await _categoriaRepository.AddAsync(entity);
+
+        
+
+    }
+
 
 }

@@ -1,5 +1,6 @@
 using FotaStock.Web.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client.NativeInterop;
 
 namespace FotaStock.Web.Repositories;
 
@@ -12,6 +13,37 @@ public class GenericRepository<TEntity>(AppDbContext _dbContext) where TEntity :
         return await _dbContext.Set<TEntity>().ToListAsync();
     }
 
+    public async Task AddAsync(TEntity entity)
+    {
+        
+
+        await _dbContext.Set<TEntity>().AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
+
+    }
+
+    public async Task<TEntity?> GetbyIdAsync(int entityId) {
+        
+        return await _dbContext.Set<TEntity>().FindAsync(entityId);
+    }
+
+    public async Task EditAsyinc(TEntity entity)
+    {
+        
+
+        _dbContext.Set<TEntity>().Update(entity);
+        await _dbContext.SaveChangesAsync();
+
+    }
+
+    public async Task DeleteAsync(TEntity entity)
+    {
+        
+
+        _dbContext.Set<TEntity>().Remove(entity);
+        await _dbContext.SaveChangesAsync();
+
+    }
 
 
 }
