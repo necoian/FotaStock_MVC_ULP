@@ -1,29 +1,60 @@
-
-
 <div id="app">
     <div class="row justify-content-between mt-4">
-        <div v-if="creado">
-            <h5 class="alert theme-success" role="alert">Se ha creado con exito la categoria</h5>
-        </div>
-        <div v-if="error">
-            <h5 class="alert theme-danger" role="alert">Error en crear la categoria</h5>
-        </div>
+        <transition name="agregar">
+            <h3 class="alert alert-success" role="alert" v-if="mensajeGuardado!=''">
+                {{mensajeGuardado}}
+            </h3>
+        </transition>
         <div class="col-4">
             <h4>Categorias</h4>
 
         </div>
         <div class="col-4 text-end">
-            <a href="#" class="btn btn-success" type= "button" v-on:click="saveCategoria">
+            <a href="#" class="btn btn-success" type= "button" v-on:click="mostrarFormulario = !mostrarFormulario">
                 <i class="fa-solid fa-circle-plus"></i> Crear nueva categoria
             </a>
-            <hr/>
-            
-            <label class="form-label">Ingresar nombre de la categoria</label>
-            <input type="text" class="form-control" id="nombre" autocomplete="off" v-model="data.nombre">
-            <label class="form-label">Ingresar descripcion de la categoria</label>
-            <input type="text" class="form-control" id="nombre" autocomplete="off" v-model="data.descripcion">
 
         </div>
+            <transition name="agregar">
+                <div v-if="mostrarFormulario">
+                <hr/>
+                    <label class="form-label">Ingresar nombre de la categoria</label>
+                    <input type="text" class="form-control" id="nombre" autocomplete="off" v-model="data.nombre">
+                    <div v-if="errores?.Nombre" class="text-danger">
+                        
+                            <span v-for="nombre in errores.Nombre">
+                                {{nombre}}
+                            </span>
+                        
+                    </div>
+                    <label class="form-label">Ingresar descripcion de la categoria</label>
+                    <input type="text" class="form-control" id="descripcion" autocomplete="off" v-model="data.descripcion">
+                    <div v-if="errores?.Descripcion" class="text-danger">
+                        
+                            <span v-for="descripcion in errores.Descripcion">
+                                {{descripcion}}
+                            </span>
+                        
+                    </div>
+                    <div class="container text-center mt-2">
+                        <div class="row align-items-start">
+                                <div class="col">
+                                <a href="#" class="btn btn-success" type= "button" v-on:click="saveCategoria">
+                                    <i class="fa-solid fa-circle-plus"></i> Guardar
+                                </a>
+                            </div>
+                            <div class="col">
+                                <a href="#" class="btn btn-danger" type= "button" v-on:click="mostrarFormulario = !mostrarFormulario">
+                                    <i class="fa-solid fa-circle-plus"></i> Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                </div>
+            </transition>
 
     </div>
 
@@ -67,35 +98,59 @@
     
     <script>
 
-        
-        
-
         const{createApp, ref} = Vue
 
         
         createApp({
             setup() {  
                            
-                
+                const mostrarFormulario = ref(false);
+                const errores = ref({});
+
+                let mensajeGuardado = ref('');
                 const data = ref([]);
                 const categorias = ref([]);
                 const isToCreate = ref(true);
 
-                const saveCategoria = () => {
-                    fetch('/Categoria/AddEdit' , 
+                function guardadoOK (mensaje, tiempo = 2000) {
+                    mensajeGuardado.value = mensaje;
+                    setInterval(() => {
+                        mensajeGuardado.value = '';
+                    }, tiempo);
+                    
+                }
+
+                const saveCategoria = async () => {
+                    
+                    errores.value = {};
+
+                    const respuesta = await fetch('/Categoria/AddEdit' , 
                     {
                         method: "POST",
                         headers: {'Content-Type': 'application/json;charset=utf-8'},
                         body: JSON.stringify({
                             nombre:data.value.nombre, descripcion:data.value.descripcion
                         })
-                    }).then(response => {
-                        if(response.ok) {
-                            data.value.nombre = ""
-                            data.value.descripcion = ""
-                        }
-                        showCategorias();
-                    })
+                    });
+                    if(!respuesta.ok)
+                    {
+                        if(respuesta.status == 400) {
+                        
+                            const errorJSON = await respuesta.json();
+                            errores.value = errorJSON;
+                            console.log(errores.value);
+
+                        } 
+                        
+                    }
+                    else 
+                    {
+
+                        data.value.nombre = ""
+                        data.value.descripcion = ""
+                        guardadoOK("Categoria cargada con éxito");
+                        showCategorias(); 
+                    }
                     
 
 
@@ -117,7 +172,7 @@
                 //A tener en cuenta. se debe colocar los nombres de las tablas en minuscula, ej (nombre)
                 showCategorias();
 
-                return {categorias, isToCreate,showCategorias, data, saveCategoria} 
+                return {categorias, isToCreate,showCategorias, data, saveCategoria, mostrarFormulario, guardadoOK, mensajeGuardado, errores} 
             }
 
         }).mount("#app")
@@ -128,3 +183,17 @@
 
 
 }
+
+
+<style>
+
+.agregar-enter-active, .agregar-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.agregar-enter-from, .agregar-leave-to {
+    opacity: 0;
+}
+
+</style>
+
