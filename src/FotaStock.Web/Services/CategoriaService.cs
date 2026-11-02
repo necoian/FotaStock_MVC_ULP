@@ -1,6 +1,7 @@
 using FotaStock.Web.Entities;
 using FotaStock.Web.Repositories;
 using FotaStock.Web.Models;
+using Microsoft.Identity.Client.NativeInterop;
 
 namespace FotaStock.Web.Services;
 
@@ -33,6 +34,34 @@ public class CategoriaService(GenericRepository<Categoria> _categoriaRepository)
 
         
 
+    }
+
+    public async Task<CategoriaVM?> GetByIdAsync(int id) {
+        
+
+        var categoria = await _categoriaRepository.GetbyIdAsync(id);
+        var categoriaVM = new CategoriaVM();
+
+        if (categoria != null)
+        {
+            categoriaVM.Nombre = categoria.Nombre;
+            categoriaVM.Descripcion = categoria.Descripcion;            
+        }
+
+        return categoriaVM;
+
+    }
+
+    public async Task EditAsync(CategoriaVM viewModel)
+    {
+        
+        var entity = new Categoria
+        {
+            CategoriaId = viewModel.CategoriaId,
+            Nombre = viewModel.Nombre,
+            Descripcion = viewModel.Descripcion,
+        };
+        await _categoriaRepository.EditAsync(entity);
     }
 
 

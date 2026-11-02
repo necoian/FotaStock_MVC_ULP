@@ -27,7 +27,7 @@ public class GenericRepository<TEntity>(AppDbContext _dbContext) where TEntity :
         return await _dbContext.Set<TEntity>().FindAsync(entityId);
     }
 
-    public async Task EditAsyinc(TEntity entity)
+    public async Task EditAsync(TEntity entity)
     {
         
 

@@ -39,13 +39,17 @@
                     <div class="container text-center mt-2">
                         <div class="row align-items-start">
                                 <div class="col">
-                                <a href="#" class="btn btn-success" type= "button" v-on:click="saveCategoria">
-                                    <i class="fa-solid fa-circle-plus"></i> Guardar
+                                <a href="#" class="btn btn-success" type= "button" v-on:click="saveCategoria" v-if="isToCreate">
+                                    Guardar
                                 </a>
+                                <a href="#" class="btn btn-success" type= "button" v-on:click="saveChangedCategorias" v-if="!isToCreate">
+                                    Editar
+                                </a>
+                                
                             </div>
                             <div class="col">
-                                <a href="#" class="btn btn-danger" type= "button" v-on:click="mostrarFormulario = !mostrarFormulario">
-                                    <i class="fa-solid fa-circle-plus"></i> Cancelar
+                                <a href="#" class="btn btn-danger" type= "button" v-on:click="canceleditCategorias">
+                                    Cancelar
                                 </a>
                             </div>
                         </div>
@@ -81,7 +85,7 @@
                     {{c.descripcion}}
                     </th>
                     <th style="width:4vh">
-                    <a href="#" class="btn btn-sm btn-primary"><i class="fa-solid fa-pen-nib"></i></a>
+                    <a href="#" class="btn btn-sm btn-primary" v-on:click="editCategorias(c)"><i class="fa-solid fa-pen-nib"></i></a>
                     <button class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                     </th>
                 </tr>
@@ -168,11 +172,68 @@
                         })
                 }
 
+                const editCategorias = (c) => {
+                    mostrarFormulario.value = true;
+                    isToCreate.value = false;
+                    data.value.categoriaId = c.categoriaId;
+                    data.value.nombre = c.nombre;
+                    data.value.descripcion = c.descripcion;
+                    
+                }
+
+                const canceleditCategorias = () => {
+                    isToCreate.value = true;
+                    data.value.categoriaId = 0;
+                    data.value.nombre = '';
+                    data.value.descripcion = '';
+                    mostrarFormulario.value = false;
+                }
+
+                const saveChangedCategorias = async () => {
+
+                    errores.value = {};
+
+                    const respuesta = await fetch('/Categoria/AddEdit' , 
+                    {
+                        method: "POST",
+                        headers: {'Content-Type': 'application/json;charset=utf-8'},
+                        body: JSON.stringify({
+                            categoriaId: data.value.categoriaId, nombre:data.value.nombre, descripcion:data.value.descripcion
+                        })
+                    });
+                    if(!respuesta.ok)
+                    {
+                        if(respuesta.status == 400) {
+                        
+                            const errorJSON = await respuesta.json();
+                            errores.value = errorJSON;
+                            console.log(errores.value);
+
+                        } 
+                        
+                    }
+                    else 
+                    {
+
+                        const index = categorias.value.findIndex(c => c.categoriaId == data.value.categoriaId);
+
+                        categorias.value[index].nombre = data.value.nombre;
+                        categorias.value[index].descripcion = data.value.descripcion;
+
+                        guardadoOK("Categoria actualizada con exito");
+                        canceleditCategorias();
+                    }
+
+                }
+                
+                
+
 
                 //A tener en cuenta. se debe colocar los nombres de las tablas en minuscula, ej (nombre)
                 showCategorias();
 
-                return {categorias, isToCreate,showCategorias, data, saveCategoria, mostrarFormulario, guardadoOK, mensajeGuardado, errores} 
+                return {categorias, isToCreate,showCategorias, data, saveCategoria,
+                 mostrarFormulario, guardadoOK, mensajeGuardado, errores, editCategorias, canceleditCategorias, saveChangedCategorias} 
             }
 
         }).mount("#app")

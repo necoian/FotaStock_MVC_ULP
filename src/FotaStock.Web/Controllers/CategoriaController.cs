@@ -37,11 +37,12 @@ public class CategoriaController(CategoriaService _categoriaService) : Controlle
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddEdit()
+    public async Task<IActionResult> AddEdit(int id)
     {
         
+        var categoriaVM = await _categoriaService.GetByIdAsync(id);
         
-        return View();
+        return Ok(categoriaVM);
 
     }
 
