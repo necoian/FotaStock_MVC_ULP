@@ -86,7 +86,7 @@
                     </th>
                     <th style="width:4vh">
                     <a href="#" class="btn btn-sm btn-primary" v-on:click="editCategorias(c)"><i class="fa-solid fa-pen-nib"></i></a>
-                    <button class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                    <a href="#" class="btn btn-sm btn-danger" v-on:click="deleteCategoria(c.categoriaId)"><i class="fa-solid fa-trash"></i></a>
                     </th>
                 </tr>
             
@@ -225,6 +225,20 @@
                     }
 
                 }
+
+                const deleteCategoria = async (id) => {
+
+                    const respuesta = await fetch(`/Categoria/Delete?id=${id}` , 
+                    {
+                        method: "DELETE",                       
+                    });
+                    if(respuesta.ok) {
+                        const index = categorias.value.findIndex(c => c.categoriaId == id);
+                        categorias.value.splice(index, 1);
+                        guardadoOK("Categoria eliminada con exito");
+                    }
+
+                }
                 
                 
 
@@ -233,7 +247,7 @@
                 showCategorias();
 
                 return {categorias, isToCreate,showCategorias, data, saveCategoria,
-                 mostrarFormulario, guardadoOK, mensajeGuardado, errores, editCategorias, canceleditCategorias, saveChangedCategorias} 
+                 mostrarFormulario, guardadoOK, mensajeGuardado, errores, editCategorias, canceleditCategorias, saveChangedCategorias, deleteCategoria} 
             }
 
         }).mount("#app")

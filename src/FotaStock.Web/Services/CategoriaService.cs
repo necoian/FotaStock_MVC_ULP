@@ -23,6 +23,28 @@ public class CategoriaService(GenericRepository<Categoria> _categoriaRepository)
         return categoriasVM;
     }
 
+    public async Task<PaginatedList<CategoriaVM>> GetByPaginationAsync(int pageIndex, int pageSize)
+    {
+        var categorias = await _categoriaRepository.GetByPaginationAsync(pageIndex,pageSize);
+
+        var categoriasVM = categorias.Items.Select(c =>
+        new CategoriaVM
+        {
+            CategoriaId = c.CategoriaId,
+            Nombre = c.Nombre,
+            Descripcion = c.Descripcion,
+        }).ToList();
+
+        return new PaginatedList<CategoriaVM>
+        (
+            categoriasVM,
+            pageIndex,
+            categorias.TotalPages
+        );
+    }
+
+
+
     public async Task AddAsync(CategoriaVM viewModel)
     {
         var entity = new Categoria
@@ -62,6 +84,14 @@ public class CategoriaService(GenericRepository<Categoria> _categoriaRepository)
             Descripcion = viewModel.Descripcion,
         };
         await _categoriaRepository.EditAsync(entity);
+    }
+
+
+    public async Task deleteAsync(int id)
+    {
+        var categoria = await _categoriaRepository.GetbyIdAsync(id);
+        await _categoriaRepository.DeleteAsync(categoria!);
+
     }
 
 

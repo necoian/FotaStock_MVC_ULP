@@ -32,9 +32,21 @@ public class CategoriaController(CategoriaService _categoriaService) : Controlle
         }
 
         return Ok(categorias);
-
-
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetPorPagina(int pageIndex = 1, int pageSize = 5) {
+        
+        var categorias =await _categoriaService.GetByPaginationAsync(pageIndex,pageSize);
+
+        if(categorias == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(categorias);
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> AddEdit(int id)
@@ -50,7 +62,17 @@ public class CategoriaController(CategoriaService _categoriaService) : Controlle
     public async Task<IActionResult> AddEdit([FromBody]CategoriaVM entityVM)
     {
         
-        await _categoriaService.AddAsync(entityVM);
+        if (entityVM.CategoriaId == 0)
+        {
+            await _categoriaService.AddAsync(entityVM);
+            ModelState.Clear();
+            entityVM = new CategoriaVM();
+        } else
+        {
+            await _categoriaService.EditAsync(entityVM);
+        }
+
+        
 
         if(!ModelState.IsValid)
         {
@@ -69,6 +91,14 @@ public class CategoriaController(CategoriaService _categoriaService) : Controlle
         }
         
         
+
+    }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _categoriaService.deleteAsync(id);
+
+        return Ok();
 
     }
 

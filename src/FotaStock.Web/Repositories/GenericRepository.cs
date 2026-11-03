@@ -1,6 +1,7 @@
 using FotaStock.Web.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client.NativeInterop;
+using FotaStock.Web.Entities;
 
 namespace FotaStock.Web.Repositories;
 
@@ -11,6 +12,17 @@ public class GenericRepository<TEntity>(AppDbContext _dbContext) where TEntity :
     public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
         return await _dbContext.Set<TEntity>().ToListAsync();
+    }
+
+    public async Task<PaginatedList<TEntity>> GetByPaginationAsync(int pageIndex, int pageSize)
+    {
+        var entities = await _dbContext.Set<TEntity>().Skip((pageIndex -  1) * pageSize).Take(pageSize).ToListAsync();
+        
+        var count = await _dbContext.Set<TEntity>().CountAsync();
+
+        var totalPages = (int)Math.Ceiling((double)count / pageSize);
+        return new PaginatedList<TEntity>(entities, pageIndex, totalPages);
+
     }
 
     public async Task AddAsync(TEntity entity)
