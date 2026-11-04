@@ -92,7 +92,18 @@
             
         </tbody>
 
+    
     </table>
+    <div class="container text-center mt-4" >
+        <a href="#" style="color:inherit" v-on:click="atrasAdelante(-1)"><i class="fa-solid fa-chevron-left"></i></a>
+        <span class=" m-1" v-for="i in indice">
+            <a href="#" style="text-decoration:none; color:inherit" v-on:click="showCategoriasPaginado(i)"
+             v-bind:style="[{fontSize : (currentPage==i) ? '1.5em' : '1em'} , {color : (currentPage==i) ? 'red' : 'inherit' }]">{{i}}</a>
+        </span> 
+        <a href="#" style="color:inherit" v-on:click="atrasAdelante(1)"><i class="fa-solid fa-chevron-right"></i></a>
+    </div>
+    
+    
 </div>
 
 
@@ -110,7 +121,11 @@
                            
                 const mostrarFormulario = ref(false);
                 const errores = ref({});
-
+                const indice = ref([]);
+                const currentPage = ref([]);
+                const totalPages = ref();
+                const hasPreviousPage = ref(false);
+                const hasNextPage = ref(false);
                 let mensajeGuardado = ref('');
                 const data = ref([]);
                 const categorias = ref([]);
@@ -153,7 +168,7 @@
                         data.value.nombre = ""
                         data.value.descripcion = ""
                         guardadoOK("Categoria cargada con éxito");
-                        showCategorias(); 
+                        showCategoriasPaginado(currentPage.value);
                     }
                     
 
@@ -170,6 +185,70 @@
                             
                             categorias.value = data
                         })
+                }
+
+                const showCategoriasPaginado = async (index = 1) => {
+
+                    
+
+                    const respuesta = await fetch(`/Categoria/GetPorPagina?pageIndex=${index}`, 
+                    {
+
+                        method: "GET",
+
+                    });
+
+                    if(respuesta.ok) {
+                        currentPage.value = index;
+                        const categoriaJSON = await respuesta.json();
+                        categorias.value = categoriaJSON.items;
+                        console.log(categoriaJSON);
+                        totalPages.value = categoriaJSON.totalPages;
+                        if(totalPages.value < categoriaJSON.pageIndex) {
+                            currentPage.value--;
+                            showCategoriasPaginado(currentPage.value);
+                        }
+                        hasNextPage.value = categoriaJSON.hasNextPage;
+                        hasPreviousPage.value = categoriaJSON.hasPreviousPage;
+                        cambiarIndice();
+
+                        
+
+                    } else {
+                        currentPage.value--;
+                        showCategoriasPaginado(currentPage.value);
+                    }
+
+                }
+
+                async function atrasAdelante(posicion) {
+
+                    console.log(hasPreviousPage);
+                    console.log(hasNextPage);
+                    if(posicion == -1 && hasPreviousPage.value) {
+                        currentPage.value--;
+                        return await showCategoriasPaginado(currentPage.value);
+                    } else if(posicion == 1 && hasNextPage.value){
+                        currentPage.value++;
+                        return await showCategoriasPaginado(currentPage.value);
+                    } else {
+                        return await showCategoriasPaginado(currentPage.value);
+                    }
+
+
+
+
+                }
+
+                async function cambiarIndice() {
+                        indice.value = {};               
+                        let contador = 1;
+                        for(    i = 0; i<totalPages.value;i++) {
+                            indice.value = contador;
+                            contador++;
+                        }                       
+                        return await indice;
+
                 }
 
                 const editCategorias = (c) => {
@@ -222,6 +301,7 @@
 
                         guardadoOK("Categoria actualizada con exito");
                         canceleditCategorias();
+                        showCategoriasPaginado(currentPage.value);
                     }
 
                 }
@@ -236,6 +316,8 @@
                         const index = categorias.value.findIndex(c => c.categoriaId == id);
                         categorias.value.splice(index, 1);
                         guardadoOK("Categoria eliminada con exito");
+                        console.log(currentPage.value);
+                        await showCategoriasPaginado(currentPage.value);
                     }
 
                 }
@@ -244,10 +326,12 @@
 
 
                 //A tener en cuenta. se debe colocar los nombres de las tablas en minuscula, ej (nombre)
-                showCategorias();
+                showCategoriasPaginado();
 
                 return {categorias, isToCreate,showCategorias, data, saveCategoria,
-                 mostrarFormulario, guardadoOK, mensajeGuardado, errores, editCategorias, canceleditCategorias, saveChangedCategorias, deleteCategoria} 
+                 mostrarFormulario, guardadoOK, mensajeGuardado, errores, editCategorias,
+                  canceleditCategorias, saveChangedCategorias, deleteCategoria, indice, showCategoriasPaginado, cambiarIndice, atrasAdelante, 
+                  currentPage} 
             }
 
         }).mount("#app")
