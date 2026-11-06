@@ -1,0 +1,164 @@
+﻿@{
+
+    ViewData["Title"] = "Register";
+}
+
+<div class="container mt-5" id="app">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card-shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Registrarse</h4>
+                </div>
+                <div class="card-body">
+                    <form v-on:submit.prevent="RegistrarUsuario">
+                        <div class="form-group mb-3">
+                            <label>Usuario</label>
+                            <input type="text" id="username" name="username" class="form-control" v-model="data.nombre" required placeholder="Ingrese su usuario">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Email</label>
+                            <input type="email" id="eail" name="email" class="form-control" v-model="data.email" required placeholder="Ingrese su email">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Contraseña</label>
+                            <input type="password" id="password" name="password" class="form-control" v-model="data.password" required placeholder="Ingrese su contraseña">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Rol</label>
+                            <select name="rol" id="rol" required v-model="rol">
+                                <option value="administrador" >Administrador</option>
+                                <option value="fotografo">Fotografo</option>
+                                <option value="data.moderador">Moderador</option>
+                                <option value="data.comprador" selected>Comprador</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Avatar (imagen)</label>
+                        <input type="file" accept="image/png,image/jpg,image/jpeg,image/webp" id="avatar" name="avatar" class="form-control" v-on:change="seleccionarAvatar" required >
+                        </div>
+                        <div v-if="exitoso" >
+                            <span class="alert alert-success text-success" role="alert">{{mensaje}}</span>
+                        </div>                        
+                        <div v-if="BrindarError" >
+                            <span class="alert alert-danger text-danger" role="alert">{{error}}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary" type="submit">Registrarse</button>
+                            <button class="btn btn-secondary" v-on:click="irLogin">Iniciar Sesión</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    
+    <script>
+        
+        const{createApp, ref} = Vue
+        
+
+        
+        createApp(
+        {
+            setup() 
+            {
+
+                const nombre = ref('');
+                const email = ref('');
+                const password = ref('');
+                const rol = ref('');
+                const avatar = ref(null);
+                const error = ref("");
+                const data = ref({});
+                const BrindarError = ref(false);
+                const exitoso = ref(false);
+                const mensaje = ref("");
+                
+
+                const seleccionarAvatar = (event) => {
+                    avatar.value = event.target.files[0]
+                }
+                
+
+                const irLogin = () => {
+                    window.location.href = '@Url.Action("Login", "Auth")';
+                }
+                
+            
+
+                const RegistrarUsuario = async () => {
+                    
+                    const formData = new FormData();
+                    
+                    formData.append('Nombre', nombre.value);
+                    formData.append('Email', email.value);
+                    formData.append('Password', password.value);
+                    formData.append('Rol', rol.value);
+                    if (avatar.value) {
+                        formData.append('Avatar', avatar.value)
+                    }
+                    error.value="";
+                    mensaje.value="";
+                    BrindarError.value=false;
+                    exitoso.value=false;
+
+                    const respuesta = await fetch('/Auth/Register' , 
+                    {
+                        method: "POST",
+                        
+                        body:  formData
+                    });
+
+                    const datosRespuesta = await respuesta.ok;
+                    console.log(datosRespuesta.message);
+
+                    if (datosRespuesta.success) {
+        
+                        mensaje.value=datosRespuesta.message;
+                        console.log(datosRespuesta.message)
+                        console.log("Registrado");
+                        exitoso.value = true;
+
+                        
+                    } 
+                    else 
+                    {
+                            
+                        error.value = datosRespuesta.message; 
+                        BrindarError.value = true;
+                        console.log(error.value);
+                    }
+                }
+
+                
+                return {
+                RegistrarUsuario, irLogin, seleccionarAvatar, 
+                
+                nombre,
+                email,
+                password,
+                rol,
+                avatar,
+                error,
+                data,
+                BrindarError,
+                exitoso,
+                mensaje
+                }
+            }   
+
+            
+                
+        }).mount("#app")
+
+
+    </script>
+
+}
