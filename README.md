@@ -17,7 +17,7 @@ Los fotógrafos habilitados podrán cargar imágenes, completar metadatos, decla
 
 ## Diagrama de relaciones
 
-![Diagrama de relaciones](src/FotaStock.Web/docs/DER_FotaStock_v2.png)
+![Diagrama de relaciones](src/FotaStock.Web/docs/der.png)
 
 
 ## Matriz de Evidencias de Requerimientos Mínimos
