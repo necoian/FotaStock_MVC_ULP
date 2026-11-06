@@ -20,6 +20,19 @@ Los fotógrafos habilitados podrán cargar imágenes, completar metadatos, decla
 ![Diagrama de relaciones](src/FotaStock.Web/docs/DER_FotaStock_v2.png)
 
 
+## Matriz de Evidencias de Requerimientos Mínimos
+
+| Requerimiento Mínimo | Estado | Enlace al Código / Controladores | Evidencia |
+|---|---|---|---|
+| 1. 4 Tablas y Relación 1:N | ✅ Cumplido | AppDbContext.cs | DER |
+| 2. Login, Roles y Avatar | ⚠️ Parcial | AuthController.cs | Pendiente |
+| 3. Manejo de Archivos (Extra) | ❌ No implementado | ArchivoImagenService.cs | Pendiente |
+| 4. ABM en Vue.js + AJAX | ⚠️ Parcial | CategoriaController.cs | Pendiente |
+| 5. Paginado por Servidor | ⚠️ Parcial | GenericRepository.cs | Pendiente |
+| 6. Selección Asíncrona (AJAX) | ❌ No implementado | Pendiente | Pendiente |
+| 7. Web API + JWT | ⚠️ Parcial | AuthController.cs | Pendiente |
+
+
 ## Pasos para inicializar proyecto
 
 1. Clonar repositorio en la carpeta deseada con el comando:
